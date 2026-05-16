@@ -1,0 +1,39 @@
+{
+  "type": "array",
+
+  "item": {
+
+    "category": {
+      "label": "Kategorie",
+      "type": "select",
+      "required": true,
+
+      "options": [
+        "afternoon",
+        "dinner",
+        "snacks",
+        "drinks"
+      ]
+    },
+
+    "name": {
+      "label": "Name",
+      "type": "text",
+      "required": true
+    },
+
+    "tags": {
+      "label": "Tags",
+
+      "type": "multi-select",
+
+      "required": false,
+
+      "options": [
+        "vegan",
+        "vegetarisch",
+        "glutenfrei"
+      ]
+    }
+  }
+}

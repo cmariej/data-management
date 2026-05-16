@@ -1,0 +1,96 @@
+{
+  "type": "array",
+
+  "item": {
+
+    "id": {
+      "label": "ID",
+      "type": "number",
+      "required": true,
+      "readonly": true
+    },
+
+    "title": {
+      "label": "Titel",
+      "type": "text",
+      "required": true
+    },
+
+    "subtitle": {
+      "label": "Untertitel",
+      "type": "text",
+      "required": false
+    },
+
+    "genre": {
+      "label": "Genre",
+
+      "type": "select",
+
+      "required": true,
+
+      "options": [
+        "Romantasy",
+        "Fantasy",
+        "Dark Fantasy",
+        "Romance",
+        "New Adult",
+        "Young Adult",
+        "Sci-Fi"
+      ]
+    },
+
+    "releasedate": {
+      "label": "Release Datum",
+      "type": "text",
+      "required": false
+    },
+
+    "image": {
+      "label": "Coverbild",
+      "type": "image",
+      "required": true
+    },
+
+    "description": {
+      "label": "Beschreibung",
+
+      "type": "object",
+
+      "required": true,
+
+      "fields": {
+
+        "de": {
+          "label": "Beschreibung (DE)",
+          "type": "textarea",
+          "required": true
+        },
+
+        "en": {
+          "label": "Beschreibung (EN)",
+          "type": "textarea",
+          "required": false
+        }
+      }
+    },
+
+    "blurb": {
+      "label": "Klappentext",
+      "type": "textarea",
+      "required": true
+    },
+
+    "thalia": {
+      "label": "Thalia Link",
+      "type": "url",
+      "required": false
+    },
+
+    "amazon": {
+      "label": "Amazon Link",
+      "type": "url",
+      "required": false
+    }
+  }
+}

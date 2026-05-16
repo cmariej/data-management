@@ -1,0 +1,575 @@
+<div class="editor-page">
+
+  <!-- SCROLL TOP BUTTON -->
+
+    <button
+    mat-fab
+
+    class="scroll-top-button"
+
+    (click)="scrollToTop()"
+    >
+
+        <mat-icon>
+            keyboard_arrow_up
+        </mat-icon>
+
+        </button>
+
+    <!-- SCROLL BOTTOM BUTTON -->
+
+    <button
+        mat-fab
+        color="primary"
+
+        class="scroll-bottom-button"
+
+        (click)="scrollToBottom()"
+        >
+
+        <mat-icon>
+            keyboard_arrow_down
+        </mat-icon>
+
+    </button>
+
+  <!-- HEADER -->
+
+  <header class="editor-header">
+
+    <div class="header-left">
+
+      <button
+        mat-icon-button
+        class="back-button"
+        (click)="back()"
+      >
+
+        <mat-icon>
+          arrow_back
+        </mat-icon>
+
+      </button>
+
+      <div class="header-text">
+
+        <h1>
+          {{ file | umlautify }}
+        </h1>
+
+        <p>
+          {{ project }}
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="actions">
+
+      <button
+        mat-stroked-button
+        (click)="addItem(); scrollToBottom()"
+      >
+
+        + Neuer Eintrag
+
+      </button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="save()"
+      >
+
+        Speichern
+
+      </button>
+
+    </div>
+
+  </header>
+
+  <!-- CONTENT -->
+
+  <div class="editor-content">
+
+    <!-- VALIDATION -->
+
+    <div
+      class="validation-errors"
+      *ngIf="validationErrors.length"
+    >
+
+      <div
+        class="error"
+        *ngFor="
+          let error
+          of validationErrors
+        "
+      >
+
+        {{ error }}
+
+      </div>
+
+    </div>
+
+    <!-- ITEMS -->
+
+    <mat-card
+      class="item-card"
+
+      *ngFor="
+        let item of data;
+        let i = index
+      "
+    >
+
+      <!-- ITEM HEADER -->
+
+      <div class="item-header">
+
+        <div>
+
+          <h2>
+            {{
+              item['title']
+              || ('Eintrag ' + (i + 1))
+            }}
+          </h2>
+
+          <p>
+            Bearbeite die Inhalte dieses Eintrags
+          </p>
+
+        </div>
+
+        <!-- DELETE -->
+
+        <button
+          mat-stroked-button
+          color="warn"
+
+          class="delete-button"
+
+          (click)="deleteItem(i)"
+        >
+
+          <mat-icon>
+            delete
+          </mat-icon>
+
+          Eintrag löschen
+
+        </button>
+
+      </div>
+
+      <!-- LAYOUT -->
+
+      <div class="editor-layout">
+
+        <!-- MAIN -->
+
+        <div class="editor-main">
+
+          <div class="fields-grid">
+
+            <!-- IMPORTANT:
+                 SCHEMA ORDER
+            -->
+
+            <ng-container
+              *ngFor="
+                let key of getKeys(schema.item)
+              "
+            >
+
+              <!-- SKIP -->
+
+              <ng-container
+                *ngIf="
+                  key !== 'id'
+                  &&
+                  !isImageField(key)
+                "
+              >
+
+                <!-- OBJECT -->
+
+                <div
+                  *ngIf="
+                    isObjectField(key)
+                  "
+
+                  class="object-group"
+
+                  [class.full-span]="true"
+                >
+
+                  <h3>
+
+                    {{ getFieldLabel(key) }}
+
+                  </h3>
+
+                  <div class="nested-grid">
+
+                    <div
+                      class="nested-field"
+
+                      *ngFor="
+                        let nestedKey
+                        of getKeys(
+                          getObjectFields(key)
+                        )
+                      "
+                    >
+
+                      <mat-form-field
+                        appearance="outline"
+
+                        class="full-width"
+                      >
+
+                        <mat-label>
+
+                          {{
+                            getObjectFields(key)
+                              [nestedKey]
+                              .label
+                          }}
+
+                        </mat-label>
+
+                        <!-- TEXTAREA -->
+
+                        <textarea
+                          *ngIf="
+                            getObjectFields(key)
+                              [nestedKey]
+                              .type
+                                === 'textarea'
+                          "
+
+                          matInput
+
+                          rows="6"
+
+                          [(ngModel)]="
+                            item[key][nestedKey]
+                          "
+                        >
+                        </textarea>
+
+                        <!-- INPUT -->
+
+                        <input
+                          *ngIf="
+                            getObjectFields(key)
+                              [nestedKey]
+                              .type
+                                !== 'textarea'
+                          "
+
+                          matInput
+
+                          [(ngModel)]="
+                            item[key][nestedKey]
+                          "
+                        >
+
+                      </mat-form-field>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <!-- BOOLEAN -->
+
+                <div
+                  class="toggle-wrapper"
+
+                  *ngIf="
+                    getFieldType(key)
+                    === 'boolean'
+                  "
+                >
+
+                  <mat-slide-toggle
+                    [(ngModel)]="item[key]"
+                  >
+
+                    {{ getFieldLabel(key) }}
+
+                  </mat-slide-toggle>
+
+                </div>
+
+                <!-- SELECT -->
+
+                <mat-form-field
+                  *ngIf="
+                    isSelectField(key)
+                  "
+
+                  appearance="outline"
+
+                  class="full-width"
+                >
+
+                  <mat-label>
+
+                    {{ getFieldLabel(key) }}
+
+                  </mat-label>
+
+                  <mat-select
+                    [(ngModel)]="item[key]"
+                  >
+
+                    <mat-option
+                      *ngFor="
+                        let option
+                        of getFieldOptions(key)
+                      "
+
+                        [value]="option"
+                    >
+
+                      {{ option }}
+
+                    </mat-option>
+
+                  </mat-select>
+
+                </mat-form-field>
+
+                <!-- MULTI SELECT -->
+
+                <mat-form-field
+                  *ngIf="
+                    isMultiSelectField(key)
+                  "
+
+                  appearance="outline"
+
+                  class="full-width"
+                >
+
+                  <mat-label>
+
+                    {{ getFieldLabel(key) }}
+
+                  </mat-label>
+
+                  <mat-select
+                    multiple
+
+                    [(ngModel)]="item[key]"
+                  >
+
+                    <mat-option
+                      *ngFor="
+                        let option
+                        of getFieldOptions(key)
+                      "
+
+                      [value]="option"
+                    >
+
+                      {{ option }}
+
+                    </mat-option>
+
+                  </mat-select>
+
+                </mat-form-field>
+
+                <!-- TEXTAREA -->
+
+                <mat-form-field
+                  *ngIf="
+                    getFieldType(key)
+                    === 'textarea'
+                  "
+
+                  appearance="outline"
+
+                  class="full-width full-span"
+                >
+
+                  <mat-label>
+
+                    {{ getFieldLabel(key) }}
+
+                  </mat-label>
+
+                  <textarea
+                    matInput
+
+                    rows="6"
+
+                    [(ngModel)]="item[key]"
+                  >
+                  </textarea>
+
+                </mat-form-field>
+
+                <!-- INPUT -->
+
+                <mat-form-field
+                  *ngIf="
+                    !isObjectField(key)
+                    &&
+                    !isSelectField(key)
+                    &&
+                    !isMultiSelectField(key)
+                    &&
+                    getFieldType(key)
+                      !== 'textarea'
+                    &&
+                    getFieldType(key)
+                      !== 'boolean'
+                  "
+
+                  appearance="outline"
+
+                  class="full-width"
+                >
+
+                  <mat-label>
+
+                    {{ getFieldLabel(key) }}
+
+                  </mat-label>
+
+                  <input
+                    matInput
+
+                    [(ngModel)]="item[key]"
+
+                    [readonly]="
+                      isReadonly(key)
+                    "
+
+                    [type]="
+                      getFieldType(key)
+                        === 'number'
+
+                        ? 'number'
+
+                        : getFieldType(key)
+                            === 'url'
+
+                          ? 'url'
+
+                          : 'text'
+                    "
+                  >
+
+                </mat-form-field>
+
+              </ng-container>
+
+            </ng-container>
+
+          </div>
+
+        </div>
+
+        <!-- IMAGE SIDEBAR -->
+
+        <div class="image-sidebar">
+
+          <ng-container
+            *ngFor="
+              let key of getKeys(schema.item)
+            "
+          >
+
+            <div
+              *ngIf="
+                isImageField(key)
+              "
+
+              class="image-upload"
+            >
+
+              <label>
+
+                {{ getFieldLabel(key) }}
+
+              </label>
+
+              <img
+                [src]="
+                  getImageUrl(item[key])
+                "
+
+                (error)="
+                  $any($event.target).src =
+                    'http://localhost:3000/uploads/books/cover-not-available.png'
+                "
+
+                class="preview-image"
+              >
+
+              <input
+                type="file"
+
+                accept="image/*"
+
+                (change)="
+                  onImageSelected(
+                    $event,
+                    item,
+                    key
+                  )
+                "
+              >
+
+              <button
+                mat-stroked-button
+                color="warn"
+
+                *ngIf="
+                  item[key]
+                  &&
+                  !item[key].includes(
+                    'cover-not-available'
+                  )
+                "
+
+                (click)="
+                  removeImage(
+                    item,
+                    key
+                  )
+                "
+              >
+
+                Bild entfernen
+
+              </button>
+
+            </div>
+
+          </ng-container>
+
+        </div>
+
+      </div>
+
+    </mat-card>
+
+    <!-- PAGE END -->
+
+    <div id="page-bottom"></div>
+
+  </div>
+
+</div>

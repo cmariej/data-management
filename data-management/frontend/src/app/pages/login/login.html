@@ -1,0 +1,71 @@
+<div class="login-layout">
+
+  <!-- RIGHT SIDE -->
+
+  <div class="login-panel">
+
+    <h1>
+        Data Management Platform
+    </h1>
+
+    <mat-card class="login-card">
+
+      <div class="logo-circle">
+        DM
+      </div>
+
+      <h2>
+        Willkommen zurück
+      </h2>
+
+      <p class="subtitle">
+        Bitte melde dich an
+      </p>
+
+      <div class="form-section">
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>
+            Benutzername
+          </mat-label>
+
+          <input
+            matInput
+            [(ngModel)]="username"
+          >
+
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>
+            Passwort
+          </mat-label>
+
+          <input
+            matInput
+            type="password"
+            [(ngModel)]="password"
+          >
+
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          class="login-button"
+          (click)="login()"
+        >
+
+          Login
+
+        </button>
+
+      </div>
+
+    </mat-card>
+
+  </div>
+
+</div>

@@ -1,0 +1,147 @@
+<div class="dashboard-page">
+
+  <!-- HEADER -->
+
+  <header class="dashboard-header">
+
+    <div class="header-left">
+
+      <div class="logo-circle">
+        DM
+      </div>
+
+      <div class="header-text">
+
+        <h1>
+          DataManager
+        </h1>
+
+        <p>
+          Admin Platform
+        </p>
+
+      </div>
+
+    </div>
+
+    <button
+      mat-stroked-button
+      color="warn"
+      class="logout-button"
+      (click)="logout()"
+    >
+
+      Logout
+
+    </button>
+
+  </header>
+
+  <!-- CONTENT -->
+
+  <main class="dashboard-content">
+
+    <div class="section-header">
+
+      <h2>
+        Projekte
+      </h2>
+
+      <p>
+        Übersicht aller Projekte
+      </p>
+
+    </div>
+
+    <!-- PROJECT GRID -->
+
+    <div class="projects-grid">
+
+      <mat-card
+        class="project-card"
+        *ngFor="let project of projects"
+      >
+
+        <!-- TOP -->
+
+        <div class="project-top">
+
+          <div class="folder-preview">
+            📁
+          </div>
+
+          <button
+            mat-icon-button
+            class="open-button"
+          >
+
+            <mat-icon>
+              more_horiz
+            </mat-icon>
+
+          </button>
+
+        </div>
+
+        <!-- INFO -->
+
+        <div class="project-info">
+
+          <h3>
+            {{ project.name }}
+          </h3>
+
+          <span>
+            {{ project.files.length }}
+            Dateien
+          </span>
+
+        </div>
+
+        <!-- FILES -->
+
+        <div class="file-grid">
+
+          <div
+            class="file-card"
+
+            *ngFor="
+              let file
+              of project.files
+            "
+
+            (click)="
+              openFile(
+                project.name,
+                file
+              )
+            "
+          >
+
+            <div class="file-icon">
+              📄
+            </div>
+
+            <div class="file-info">
+
+              <span class="file-name">
+                {{ file | umlautify }}
+              </span>
+
+            </div>
+
+            <mat-icon class="file-arrow">
+              chevron_right
+            </mat-icon>
+
+          </div>
+
+        </div>
+
+      </mat-card>
+
+    </div>
+
+  </main>
+
+</div>

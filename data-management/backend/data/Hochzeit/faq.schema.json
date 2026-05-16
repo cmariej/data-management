@@ -1,0 +1,16 @@
+{
+  "type": "array",
+
+    "item": {
+        "question": {
+            "label": "Frage",
+            "type": "text",
+            "required": true
+        },
+        "answer": {
+            "label": "Antwort",
+            "type": "textarea",
+            "required": true
+        }
+    }
+}
