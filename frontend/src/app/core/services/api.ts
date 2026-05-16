@@ -4,6 +4,7 @@ import {
 } from '@angular/core'
 
 import { HttpClient } from '@angular/common/http'
+import { environment } from '../../../environments/environment.prod'
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class ApiService {
   private http = inject(HttpClient)
 
   private API =
-    'http://localhost:3000/api/projects'
+    `${environment.apiUrl}/projects`
 
   // Projekte laden
   getProjects() {
@@ -68,14 +69,14 @@ export class ApiService {
       file
     )
     return this.http.post<any>(
-      'http://localhost:3000/api/upload',
+      `${environment.apiUrl}/upload`,
       formData
     )
   }
 
   deleteImage(path: string) {
     return this.http.delete(
-      'http://localhost:3000/api/upload',
+      `${environment.apiUrl}/upload`,
 
       {
         body: {

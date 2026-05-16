@@ -7,9 +7,11 @@ export const authInterceptor: HttpInterceptorFn = (
 
   const token = localStorage.getItem('token')
 
-  console.log('TOKEN:', token)
-
-  if (token) {
+  if (
+    token &&
+    ['POST', 'PUT', 'DELETE']
+      .includes(req.method)
+  ) {
 
     req = req.clone({
       setHeaders: {
