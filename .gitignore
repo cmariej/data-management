@@ -18,7 +18,3 @@ frontend/coverage/
 Thumbs.db
 
 .vscode
-
-# Uploads
-backend/uploads/*
-!backend/uploads/.gitkeep
