@@ -33,7 +33,6 @@
           },
           "configurations": {
             "production": {
-              "baseHref": "/data-management/",
               "budgets": [
                 {
                   "type": "initial",
