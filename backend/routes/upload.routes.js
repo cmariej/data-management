@@ -6,8 +6,6 @@ const fs = require('fs')
 
 const auth = require('../middleware/auth')
 
-router.use(auth)
-
 const UPLOAD_DIR = path.join(
   __dirname,
   '../uploads/books'
@@ -58,7 +56,7 @@ const upload = multer({
 
 router.post(
   '/',
-
+  auth,
   upload.single('image'),
 
   (req, res) => {
@@ -76,7 +74,7 @@ router.post(
   }
 )
 
-router.delete('/', (req, res) => {
+router.delete('/', auth, (req, res) => {
 
   try {
 

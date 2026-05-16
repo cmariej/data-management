@@ -10,9 +10,6 @@ const DATA_DIR = path.join(
   '../data'
 )
 
-// Alle Routes schützen
-router.use(auth)
-
 
 // ========================================
 // Projekte auflisten
@@ -148,7 +145,7 @@ router.get('/:project/:file', (req, res) => {
 // Datei speichern
 // ========================================
 
-router.put('/:project/:file', (req, res) => {
+router.put('/:project/:file', auth, (req, res) => {
 
   try {
 
