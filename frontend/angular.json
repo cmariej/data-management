@@ -18,7 +18,6 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "baseHref": "/data-management/",
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
@@ -34,6 +33,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/data-management/",
               "budgets": [
                 {
                   "type": "initial",
