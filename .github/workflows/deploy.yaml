@@ -33,7 +33,7 @@ jobs:
       - name: Build Angular
         working-directory: frontend
         run: |
-          npm run build:gh -- --configuration production --base-href=/
+          npm run build:gh
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
