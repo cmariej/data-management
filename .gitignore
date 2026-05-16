@@ -17,6 +17,8 @@ frontend/coverage/
 .DS_Store
 Thumbs.db
 
+.vscode
+
 # Uploads
 backend/uploads/*
 !backend/uploads/.gitkeep
