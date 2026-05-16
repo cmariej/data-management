@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build:gh": "ng build --configuration production && cp dist/data-management/browser/index.html dist/data-management/browser/404.html"
-  },
+ },
   "private": true,
   "packageManager": "npm@11.12.1",
   "dependencies": {
