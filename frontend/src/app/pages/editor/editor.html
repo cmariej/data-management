@@ -506,17 +506,14 @@
               </label>
 
               <img
-                [src]="
-                  getImageUrl(item[key])
-                "
-
-                (error)="
-                  $any($event.target).src =
-                    'http://localhost:3000/uploads/books/cover-not-available.png'
-                "
-
-                class="preview-image"
-              >
+              [src]="getImageUrl(item[key])"
+              (error)="
+                $any($event.target).src =
+                  environment.imageUrl +
+                  '/uploads/books/cover-not-available.png'
+              "
+              class="preview-image"
+            />
 
               <input
                 type="file"

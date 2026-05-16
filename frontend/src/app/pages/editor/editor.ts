@@ -24,6 +24,7 @@ import { MatSelectModule } from '@angular/material/select'
 
 import { ApiService } from '../../core/services/api'
 import { UmlautifyPipe } from '../../shared/pipes/umlautify-pipe'
+import { environment } from '../../../environments/environment'
 
 @Component({
   selector: 'app-editor',
@@ -65,6 +66,8 @@ export class EditorComponent implements OnInit {
   schema: any = {}
 
   validationErrors: string[] = []
+
+  environment = environment
 
   ngOnInit(): void {
 
@@ -592,7 +595,7 @@ export class EditorComponent implements OnInit {
       || '/uploads/books/cover-not-available.png'
 
     return (
-      'http://localhost:3000'
+      environment.imageUrl
       + imagePath
       + '?v='
       + this.imageCacheBuster
