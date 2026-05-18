@@ -505,13 +505,16 @@
 
               </label>
 
-              <img
+             <img
               [src]="getImageUrl(item[key])"
+
               (error)="
                 $any($event.target).src =
-                  environment.imageUrl +
-                  '/uploads/books/cover-not-available.png'
+                  getImageUrl(
+                    '/media/book-covers/cover-not-available.png'
+                  )
               "
+
               class="preview-image"
             />
 

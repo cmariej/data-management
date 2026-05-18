@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express = require('express')
 const cors = require('cors')
 const dotenv = require('dotenv')
@@ -9,11 +11,10 @@ dotenv.config()
 app.use(cors())
 app.use(express.json())
 
-
 app.use(
-  '/uploads',
+  '/media',
   express.static(
-    path.join(__dirname, 'uploads')
+    path.join(__dirname, 'media')
   )
 )
 
@@ -22,7 +23,7 @@ app.use('/api/projects', require('./routes/project.routes'))
 
 app.use(
   '/api/upload',
-  require('./routes/upload.routes')
+  require('./routes/media.routes')
 )
 
 const PORT = process.env.PORT || 3000

@@ -1,58 +1,38 @@
 const router = require('express').Router()
 
-const fs = require('fs')
-const path = require('path')
-
 const auth = require('../middleware/auth')
 
-const DATA_DIR = path.join(
-  __dirname,
-  '../data'
-)
+const supabase = require('../supabase')
 
 
 // ========================================
-// Projekte auflisten
+// Projekte laden
 // ========================================
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
 
   try {
 
+    const {
+      data,
+      error
+    } =
+      await supabase
+        .storage
+        .from('data')
+        .download('projects.json')
+
+    if (error) {
+      throw error
+    }
+
+    const text =
+      await data.text()
+
     const projects =
-      fs.readdirSync(DATA_DIR)
+      JSON.parse(text)
 
-    const result = projects.map(project => {
-
-      const projectPath = path.join(
-        DATA_DIR,
-        project
-      )
-
-      const files =
-        fs.readdirSync(projectPath)
-
-          .filter(file =>
-            file
-              .toLowerCase()
-              .endsWith('.json')
-              &&
-            !file
-              .toLowerCase()
-              .endsWith('.schema.json')
-          )
-
-          .map(file =>
-            file.replace('.json', '')
-          )
-
-      return {
-        name: project,
-        files
-      }
-    })
-
-    res.json(result)
+    res.json(projects)
 
   } catch (err) {
 
@@ -60,7 +40,10 @@ router.get('/', (req, res) => {
 
     res.status(500).json({
       message:
-        'Fehler beim Laden der Projekte'
+        'Fehler beim Laden der Projekte',
+
+      error:
+        err.message
     })
   }
 })
@@ -68,30 +51,37 @@ router.get('/', (req, res) => {
 
 // ========================================
 // Schema laden
-// WICHTIG:
-// MUSS vor /:project/:file stehen
 // ========================================
 
 router.get(
   '/:project/:file/schema',
-  (req, res) => {
+
+  async (req, res) => {
 
     try {
 
-      const schemaPath = path.join(
-        DATA_DIR,
-        req.params.project,
-        `${req.params.file}.schema.json`
-      )
+      const filePath =
+        `${req.params.project}/${req.params.file}.schema.json`
 
-      const schema = JSON.parse(
-        fs.readFileSync(
-          schemaPath,
-          'utf-8'
-        )
-      )
+      const {
+        data,
+        error
+      } =
+        await supabase
+          .storage
+          .from('data')
+          .download(filePath)
 
-      res.json(schema)
+      if (error) {
+        throw error
+      }
+
+      const text =
+        await data.text()
+
+      res.json(
+        JSON.parse(text)
+      )
 
     } catch (err) {
 
@@ -99,7 +89,10 @@ router.get(
 
       res.status(500).json({
         message:
-          'Fehler beim Laden des Schemas'
+          'Fehler beim Laden des Schemas',
+
+        error:
+          err.message
       })
     }
   }
@@ -107,76 +100,113 @@ router.get(
 
 
 // ========================================
-// Einzelne JSON-Datei laden
+// JSON laden
 // ========================================
 
-router.get('/:project/:file', (req, res) => {
+router.get(
+  '/:project/:file',
 
-  try {
+  async (req, res) => {
 
-    const filePath = path.join(
-      DATA_DIR,
-      req.params.project,
-      `${req.params.file}.json`
-    )
+    try {
 
-    const data = JSON.parse(
-      fs.readFileSync(
-        filePath,
-        'utf-8'
+      const filePath =
+        `${req.params.project}/${req.params.file}.json`
+
+      const {
+        data,
+        error
+      } =
+        await supabase
+          .storage
+          .from('data')
+          .download(filePath)
+
+      if (error) {
+        throw error
+      }
+
+      const text =
+        await data.text()
+
+      res.json(
+        JSON.parse(text)
       )
-    )
 
-    res.json(data)
+    } catch (err) {
 
-  } catch (err) {
+      console.error(err)
 
-    console.error(err)
+      res.status(500).json({
+        message:
+          'Fehler beim Laden der Datei',
 
-    res.status(500).json({
-      message:
-        'Fehler beim Laden der Datei'
-    })
+        error:
+          err.message
+      })
+    }
   }
-})
+)
 
 
 // ========================================
-// Datei speichern
+// JSON speichern
 // ========================================
 
-router.put('/:project/:file', auth, (req, res) => {
+router.put(
+  '/:project/:file',
 
-  try {
+  auth,
 
-    const filePath = path.join(
-      DATA_DIR,
-      req.params.project,
-      `${req.params.file}.json`
-    )
+  async (req, res) => {
 
-    fs.writeFileSync(
-      filePath,
-      JSON.stringify(
-        req.body,
-        null,
-        2
-      )
-    )
+    try {
 
-    res.json({
-      success: true
-    })
+      const filePath =
+        `${req.params.project}/${req.params.file}.json`
 
-  } catch (err) {
+      const json =
+        JSON.stringify(
+          req.body,
+          null,
+          2
+        )
 
-    console.error(err)
+      const { error } =
+        await supabase
+          .storage
+          .from('data')
+          .upload(
+            filePath,
+            Buffer.from(json),
+            {
+              upsert: true,
+              contentType:
+                'application/json'
+            }
+          )
 
-    res.status(500).json({
-      message:
-        'Fehler beim Speichern'
-    })
+      if (error) {
+        throw error
+      }
+
+      res.json({
+        success: true
+      })
+
+    } catch (err) {
+
+      console.error(err)
+
+      res.status(500).json({
+        message:
+          'Fehler beim Speichern',
+
+        error:
+          err.message
+      })
+    }
   }
-})
+)
 
 module.exports = router

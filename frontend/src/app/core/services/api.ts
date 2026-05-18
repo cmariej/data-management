@@ -69,14 +69,14 @@ export class ApiService {
       file
     )
     return this.http.post<any>(
-      `${environment.apiUrl}/upload`,
+      `${environment.apiUrl}/media`,
       formData
     )
   }
 
   deleteImage(path: string) {
     return this.http.delete(
-      `${environment.apiUrl}/upload`,
+      `${environment.apiUrl}/media`,
 
       {
         body: {

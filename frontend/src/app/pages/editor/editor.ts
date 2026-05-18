@@ -227,7 +227,7 @@ export class EditorComponent implements OnInit {
           case 'image':
 
             newItem[key] =
-              '/uploads/books/cover-not-available.png'
+              '/media/book-covers/cover-not-available.png'
 
             break
 
@@ -264,6 +264,10 @@ export class EditorComponent implements OnInit {
   }
 
   getKeys(obj: any): string[] {
+
+    if (!obj) {
+      return []
+    }
 
     return Object.keys(obj)
   }
@@ -522,6 +526,7 @@ export class EditorComponent implements OnInit {
       return
     }
 
+    console.log('image selected')
     this.api.uploadImage(file)
       .subscribe({
 
@@ -558,7 +563,7 @@ export class EditorComponent implements OnInit {
     ) {
 
       item[key] =
-        '/uploads/books/cover-not-available.png'
+        '/media/book-covers/cover-not-available.png'
 
       this.imageCacheBuster =
         Date.now()
@@ -572,7 +577,7 @@ export class EditorComponent implements OnInit {
         next: () => {
 
           item[key] =
-            '/uploads/books/cover-not-available.png'
+            '/media/book-covers/cover-not-available.png'
 
           this.imageCacheBuster =
             Date.now()
@@ -592,10 +597,25 @@ export class EditorComponent implements OnInit {
 
     const imagePath =
       path
-      || '/uploads/books/cover-not-available.png'
+      || '/media/book-covers/cover-not-available.png'
+
+    // Supabase URL
+
+    if (
+      imagePath.startsWith('http')
+    ) {
+
+      return (
+        imagePath
+        + '?v='
+        + this.imageCacheBuster
+      )
+    }
+
+    // Lokales Backend Bild
 
     return (
-      environment.imageUrl
+      environment.apiUrl.replace('/api', '')
       + imagePath
       + '?v='
       + this.imageCacheBuster
