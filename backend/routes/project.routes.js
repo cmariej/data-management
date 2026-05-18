@@ -1,52 +1,62 @@
 const router = require('express').Router()
 
-const auth = require('../middleware/auth')
+const auth =
+  require('../middleware/auth')
 
-const supabase = require('../supabase')
+const supabase =
+  require('../supabase')
+
+const BUCKET =
+  'data'
 
 
 // ========================================
 // Projekte laden
 // ========================================
 
-router.get('/', async (req, res) => {
+router.get(
+  '/',
 
-  try {
+  async (req, res) => {
 
-    const {
-      data,
-      error
-    } =
-      await supabase
-        .storage
-        .from('data')
-        .download('projects.json')
+    try {
 
-    if (error) {
-      throw error
+      const {
+        data,
+        error
+      } =
+        await supabase
+          .storage
+          .from(BUCKET)
+          .download('projects.json')
+
+      if (error) {
+        throw error
+      }
+
+      const text =
+        await data.text()
+
+      const projects =
+        JSON.parse(text)
+
+      res.json(projects)
+
+    } catch (err) {
+
+      console.error(err)
+
+      res.status(500).json({
+
+        message:
+          'Fehler beim Laden der Projekte',
+
+        error:
+          err.message
+      })
     }
-
-    const text =
-      await data.text()
-
-    const projects =
-      JSON.parse(text)
-
-    res.json(projects)
-
-  } catch (err) {
-
-    console.error(err)
-
-    res.status(500).json({
-      message:
-        'Fehler beim Laden der Projekte',
-
-      error:
-        err.message
-    })
   }
-})
+)
 
 
 // ========================================
@@ -69,7 +79,7 @@ router.get(
       } =
         await supabase
           .storage
-          .from('data')
+          .from(BUCKET)
           .download(filePath)
 
       if (error) {
@@ -79,15 +89,17 @@ router.get(
       const text =
         await data.text()
 
-      res.json(
+      const schema =
         JSON.parse(text)
-      )
+
+      res.json(schema)
 
     } catch (err) {
 
       console.error(err)
 
       res.status(500).json({
+
         message:
           'Fehler beim Laden des Schemas',
 
@@ -119,7 +131,7 @@ router.get(
       } =
         await supabase
           .storage
-          .from('data')
+          .from(BUCKET)
           .download(filePath)
 
       if (error) {
@@ -129,15 +141,17 @@ router.get(
       const text =
         await data.text()
 
-      res.json(
+      const json =
         JSON.parse(text)
-      )
+
+      res.json(json)
 
     } catch (err) {
 
       console.error(err)
 
       res.status(500).json({
+
         message:
           'Fehler beim Laden der Datei',
 
@@ -172,15 +186,18 @@ router.put(
           2
         )
 
-      const { error } =
+      const {
+        error
+      } =
         await supabase
           .storage
-          .from('data')
+          .from(BUCKET)
           .upload(
             filePath,
             Buffer.from(json),
             {
               upsert: true,
+
               contentType:
                 'application/json'
             }
@@ -199,6 +216,7 @@ router.put(
       console.error(err)
 
       res.status(500).json({
+
         message:
           'Fehler beim Speichern',
 
