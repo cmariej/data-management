@@ -82,7 +82,7 @@ router.post(
       console.error(err)
 
       res.status(500).json({
-        error: 'Upload fehlgeschlagen'
+        error: err.message
       })
     }
   }
