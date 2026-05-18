@@ -54,7 +54,7 @@ router.post(
         await supabase
           .storage
           .from('media')
-          .update(
+          .upload(
             filePath,
             req.file.buffer,
             {

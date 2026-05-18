@@ -56,7 +56,7 @@ export class EditorComponent implements OnInit {
   private api = inject(ApiService)
   private cdr = inject(ChangeDetectorRef)
 
-  imageCacheBuster = Date.now()
+  imageCacheBuster = crypto.randomUUID()
 
   project = ''
   file = ''
@@ -104,6 +104,11 @@ export class EditorComponent implements OnInit {
 
       error: (err) => {
         console.error(err)
+
+        alert(
+          err?.error?.error
+          || 'Bildupload fehlgeschlagen'
+        )
       }
     })
   }
@@ -146,10 +151,15 @@ export class EditorComponent implements OnInit {
       return
     }
 
+    const cleanedData =
+      JSON.parse(
+        JSON.stringify(this.data)
+      )
+
     this.api.saveFile(
       this.project,
       this.file,
-      this.data
+      cleanedData
     ).subscribe({
 
       next: () => {
@@ -158,8 +168,12 @@ export class EditorComponent implements OnInit {
       },
 
       error: (err) => {
-
         console.error(err)
+
+        alert(
+          err?.error?.message
+          || 'Speichern fehlgeschlagen'
+        )
       }
     })
   }
@@ -535,7 +549,7 @@ export class EditorComponent implements OnInit {
           item[key] = res.path
 
           this.imageCacheBuster =
-            Date.now()
+            crypto.randomUUID()
 
           this.cdr.detectChanges()
         },
@@ -566,7 +580,7 @@ export class EditorComponent implements OnInit {
         '/media/book-covers/cover-not-available.png'
 
       this.imageCacheBuster =
-        Date.now()
+        crypto.randomUUID()
 
       return
     }
@@ -580,7 +594,7 @@ export class EditorComponent implements OnInit {
             '/media/book-covers/cover-not-available.png'
 
           this.imageCacheBuster =
-            Date.now()
+            crypto.randomUUID()
 
           this.cdr.detectChanges()
         },
