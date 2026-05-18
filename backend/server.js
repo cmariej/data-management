@@ -11,11 +11,21 @@ dotenv.config()
 app.use(cors())
 app.use(express.json())
 
+// Default Bilder lokal
+
 app.use(
   '/media',
   express.static(
     path.join(__dirname, 'media')
   )
+)
+
+
+// Upload API
+
+app.use(
+  '/api/media',
+  require('./routes/media.routes')
 )
 
 app.use('/api/auth', require('./routes/auth.routes'))
