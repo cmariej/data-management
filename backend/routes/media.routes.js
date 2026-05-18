@@ -54,14 +54,12 @@ router.post(
         await supabase
           .storage
           .from('media')
-          .upload(
+          .update(
             filePath,
             req.file.buffer,
             {
               contentType:
                 req.file.mimetype,
-
-              upsert: true
             }
           )
 

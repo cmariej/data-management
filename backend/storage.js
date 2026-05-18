@@ -121,11 +121,10 @@ async function saveProject(
     await supabase
       .storage
       .from(BUCKET)
-      .upload(
+      .update(
         filePath,
         Buffer.from(json),
         {
-          upsert: true,
           contentType:
             'application/json'
         }
