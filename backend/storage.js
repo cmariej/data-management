@@ -1,147 +1,48 @@
-const supabase =
-  require('./supabase')
+const fs = require('fs/promises')
+const path = require('path')
 
-const BUCKET =
-  'data'
+const DATA_DIR = path.join(__dirname, 'data')
 
-
-// ========================================
-// Projekte laden
-// ========================================
 
 async function loadProjects() {
-
-  const {
-    data,
-    error
-  } =
-    await supabase
-      .storage
-      .from(BUCKET)
-      .download('projects.json')
-
-  if (error) {
-    throw error
-  }
-
-  const text =
-    await data.text()
-
+  const text = await fs.readFile(
+    path.join(DATA_DIR, 'projects.json'),
+    'utf8'
+  )
   return JSON.parse(text)
 }
 
 
-// ========================================
-// Datei laden
-// ========================================
-
-async function loadProject(
-  projectName,
-  fileName
-) {
-
-  const filePath =
-    `${projectName}/${fileName}.json`
-
-  const {
-    data,
-    error
-  } =
-    await supabase
-      .storage
-      .from(BUCKET)
-      .download(filePath)
-
-  if (error) {
-    throw error
-  }
-
-  const text =
-    await data.text()
-
+async function loadProject(projectName, fileName) {
+  const text = await fs.readFile(
+    path.join(DATA_DIR, projectName, `${fileName}.json`),
+    'utf8'
+  )
   return JSON.parse(text)
 }
 
 
-// ========================================
-// Schema laden
-// ========================================
-
-async function loadSchema(
-  projectName,
-  fileName
-) {
-
-  const filePath =
-    `${projectName}/${fileName}.schema.json`
-
-  const {
-    data,
-    error
-  } =
-    await supabase
-      .storage
-      .from(BUCKET)
-      .download(filePath)
-
-  if (error) {
-    throw error
-  }
-
-  const text =
-    await data.text()
-
+async function loadSchema(projectName, fileName) {
+  const text = await fs.readFile(
+    path.join(DATA_DIR, projectName, `${fileName}.schema.json`),
+    'utf8'
+  )
   return JSON.parse(text)
 }
 
 
-// ========================================
-// Datei speichern
-// ========================================
-
-async function saveProject(
-  projectName,
-  fileName,
-  jsonData
-) {
-
-  const filePath =
-    `${projectName}/${fileName}.json`
-
-  const json =
-    JSON.stringify(
-      jsonData,
-      null,
-      2
-    )
-
-  const {
-    error
-  } =
-    await supabase
-      .storage
-      .from(BUCKET)
-      .update(
-        filePath,
-        Buffer.from(json),
-        {
-          contentType:
-            'application/json'
-        }
-      )
-
-  if (error) {
-    throw error
-  }
+async function saveProject(projectName, fileName, jsonData) {
+  await fs.writeFile(
+    path.join(DATA_DIR, projectName, `${fileName}.json`),
+    JSON.stringify(jsonData, null, 2),
+    'utf8'
+  )
 }
+
 
 module.exports = {
-
   loadProjects,
-
   loadProject,
-
   loadSchema,
-
   saveProject
 }
