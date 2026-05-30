@@ -1,0 +1,12 @@
+{
+  "/api": {
+    "target": "https://warehouse.jung-privat.de",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/media": {
+    "target": "https://warehouse.jung-privat.de",
+    "secure": true,
+    "changeOrigin": true
+  }
+}
