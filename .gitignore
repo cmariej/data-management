@@ -2,9 +2,9 @@
 **/node_modules/
 
 # Angular
-frontend/.angular/
-frontend/dist/
-frontend/coverage/
+.angular/
+dist/
+coverage/
 
 # Logs
 *.log

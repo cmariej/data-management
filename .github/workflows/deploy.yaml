@@ -27,18 +27,18 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        working-directory: frontend
+        working-directory: .
         run: npm install
 
       - name: Build Angular
-        working-directory: frontend
+        working-directory: .
         run: |
           npm run build:gh
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: frontend/dist/data-management/browser
+          path: ./dist/data-management/browser
 
   deploy:
 
